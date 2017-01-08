@@ -1,6 +1,7 @@
 package com.demo;
 
 import com.facebook.react.ReactActivity;
+import com.greatdroid.reactnative.media.MainActivityInstance;
 
 public class MainActivity extends ReactActivity {
 
@@ -10,6 +11,7 @@ public class MainActivity extends ReactActivity {
      */
     @Override
     protected String getMainComponentName() {
+        MainActivityInstance.setActivity(this);
         return "Demo";
     }
 }
