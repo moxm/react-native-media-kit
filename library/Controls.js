@@ -11,7 +11,8 @@ import ReactNative, {
   ScrollView,
   Image,
   Platform,
-  ActivityIndicator,
+  Animated ,
+  TouchableWithoutFeedback
 } from 'react-native';
 
 import Slider from '@ldn0x7dc/react-native-slider';
@@ -53,14 +54,14 @@ function formatProgress(timeSec, containHours) {
   }
   return minutes + ':' + seconds;
 }
-
 export default class Controls extends React.Component {
 
   defaultProps = {
     current: 0,
     total: 0,
     buffering: false,
-    playing: false
+    playing: false, 
+    screenOrientation: 1 
   }
 
   constructor(props) {
@@ -68,6 +69,8 @@ export default class Controls extends React.Component {
     this.state = {
       sliding: false,
       current: this.props.current,
+      selectSource:0,
+      showAllSourceView:false
     };
   }
 
@@ -80,20 +83,13 @@ export default class Controls extends React.Component {
       }
     }
   }
-
+  componentWillUnmount(){
+    this.timer&&clearTimeout(this.timer);
+  }
   render() {
     const containHours = this.props.total >= 60 * 60 * 1000;
     const currentFormated = formatProgress(this.state.current / 1000, containHours);
     const totalFormated = formatProgress(this.props.total / 1000, containHours);
-
-    let bufferIndicator;
-    if(this.props.buffering) {
-      bufferIndicator = (
-        <ActivityIndicator
-          color={'#f2f2f2'}
-          size={'large'}/>
-      );
-    }
 
     let tracks = [];
     if(this.props.bufferRanges) {
@@ -113,35 +109,74 @@ export default class Controls extends React.Component {
         style: {backgroundColor: 'white'}
       }
     );
-
+    let selectSourceView ;
+    
+    if(this.props.showSource){
+      selectSourceView = (
+        <TouchableOpacity 
+        onPress={this.props.showAllSourceView}
+        style={{width:40,height:40,alignItems:"center",justifyContent:"center"}}>
+          <Text style={{textAlign:"center",fontSize:12,color:"white"}}>{this.props.sourceName}</Text>
+        </TouchableOpacity>
+      ) ;
+    }
 
     return (
       <View
-        style={{position: 'absolute', left: 0, top: 0, right: 0, bottom: 0, flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
-        {bufferIndicator}
+        style={{
+          flexDirection: 'column', alignItems: 'center', justifyContent: 'center' ,height:45
+        }}>
+        
         <View
-          style={{position: 'absolute', left: 0, right: 0, bottom: 0, height: 40, backgroundColor: '#00000033', flexDirection: 'row'}}>
+          style={{position: 'absolute', left: 0, right: 0, bottom: 0, height: 40, backgroundColor: '#00000088', flexDirection: 'row'}}>
 
           <TouchableOpacity
             onPress={this.props.onPauseOrPlay}
+            style={{width: 40, height: 40, alignItems: 'center', justifyContent: 'center',marginLeft:10}}>
+            <Image
+              style={{width: 24, height: 24, resizeMode: 'contain'}}
+              source={this.props.playing ? require('./img/pause.png') : require('./img/play.png')}/>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={this.props.next}
             style={{width: 40, height: 40, alignItems: 'center', justifyContent: 'center'}}>
             <Image
-              style={{width: 20, height: 20, resizeMode: 'contain'}}
-              source={this.props.playing ? require('./img/media-player-pause.png') : require('./img/media-player-play.png')}/>
+              style={{width: 28, height: 28, resizeMode: 'contain'}}
+              source={require("./img/next.png")}/>
           </TouchableOpacity>
 
           <Text
             style={{alignSelf: 'center', fontSize: 12, color: 'white', width: currentFormated.length == 5 ? 35:56, textAlign: 'right'}}>
             {currentFormated}
           </Text>
-
-          <Slider
-            style={{flex: 1, marginHorizontal: 5, height: 40}}
+          <Text
+            style={{alignSelf: 'center', fontSize: 12, color: 'white'}}>
+                /  
+          </Text>
+          <Text
+            style={{alignSelf: 'center', fontSize: 12, color: 'white', width: totalFormated.length == 5 ? 35:56, marginRight: 10}}>
+              {totalFormated}
+          </Text>
+          <View style={{flex:1,justifyContent:"flex-end",flexDirection:"row"}}>
+            {selectSourceView}
+            <TouchableOpacity style={{width: 40, height: 40, alignItems: 'center', justifyContent: 'center'}}
+                onPress={this.props.fullScreen}>
+                <Image 
+                    source={this.props.screenOrientation == 0 ? require("./img/exit-fullscreen.png"): require("./img/fullscreen.png")}
+                    style={{width:22,height:22}}/>
+            </TouchableOpacity>
+          </View>
+          
+        </View>
+        <Slider
+            style={{flex: 1 ,height:10, position:'absolute',left:0,top:0,right:0}}
             trackContainerStyle={{height: 2, backgroundColor: 'gray'}}
             thumbImage={require('./img/media-player-thumb.png')}
             thumbStyle={{width: 10, height: 10}}
-
+            
             onSlidingComplete={(value) => {
+              console.log("slider value = " + value ) ;
               this.setState({
                 sliding: false,
                 current: value
@@ -160,13 +195,6 @@ export default class Controls extends React.Component {
             disabled={this.props.total > 0}
             tracks={tracks}
           />
-
-          <Text
-            style={{alignSelf: 'center', fontSize: 12, color: 'white', width: totalFormated.length == 5 ? 35:56, marginRight: 10}}>
-            {totalFormated}
-          </Text>
-        </View>
-
       </View>
     );
   }

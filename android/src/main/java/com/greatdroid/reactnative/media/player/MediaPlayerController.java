@@ -71,7 +71,6 @@ public class MediaPlayerController {
     this.exoPlayer.setPlayWhenReady(false);
     this.mainHandler = new Handler(Looper.getMainLooper());
 
-
     this.aspectRatioFrameLayout = new AspectRatioFrameLayout(context);
     this.textureView = new TextureView(aspectRatioFrameLayout.getContext());
     this.textureView.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
@@ -171,7 +170,13 @@ public class MediaPlayerController {
   }
 
   private TrackRenderersBuilder createTrackRenderersBuilder(Context context, String uriString) {
-    final Uri uri = Uri.parse(uriString);
+    Uri uri = null ;
+    if(uriString.startsWith("http")){
+
+    }else{
+      uriString = "file://" + uriString ;
+    }
+    uri = Uri.parse(uriString);
     final int contentType = Util.inferContentType(uri.getLastPathSegment());
     final String userAgent = Util.getUserAgent(context, "react-native-media-kit");
 
@@ -286,8 +291,6 @@ public class MediaPlayerController {
       }
     }
   }
-
-
 
 
   private class InternalEventListener implements MediaCodecVideoTrackRenderer.EventListener, MediaCodecAudioTrackRenderer.EventListener, TextRenderer, ExoPlayer.Listener, MetadataTrackRenderer.MetadataRenderer<List<Id3Frame>> {

@@ -1,8 +1,12 @@
 package com.greatdroid.reactnative.media.player;
 
+import android.app.Activity;
+import android.content.pm.ActivityInfo;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.View;
+import android.view.WindowManager;
 
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.WritableArray;
@@ -16,6 +20,7 @@ import com.facebook.react.uimanager.UIManagerModule;
 import com.facebook.react.uimanager.annotations.ReactProp;
 import com.facebook.react.uimanager.events.Event;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
+import com.greatdroid.reactnative.media.MainActivityInstance;
 
 import java.util.Map;
 
@@ -36,9 +41,10 @@ public class ReactMediaPlayerViewManager extends SimpleViewManager<ReactMediaPla
   public static final int CMD_PAUSE = 2;
   public static final int CMD_SEEK_TO = 3;
   public static final int CMD_STOP = 4;
+    private static final int CMD_FULLSCREEN = 5;
 
 
-  @Override
+    @Override
   public String getName() {
     return REACT_CLASS;
   }
@@ -234,7 +240,8 @@ public class ReactMediaPlayerViewManager extends SimpleViewManager<ReactMediaPla
             "play", CMD_PLAY,
             "pause", CMD_PAUSE,
             "seekTo", CMD_SEEK_TO,
-            "stop", CMD_STOP);
+            "stop", CMD_STOP ,
+            "fullScreen" , CMD_FULLSCREEN );
   }
 
   @Override
@@ -253,6 +260,19 @@ public class ReactMediaPlayerViewManager extends SimpleViewManager<ReactMediaPla
       case CMD_STOP:
         root.getMediaPlayerController().stop();
         break;
+        case CMD_FULLSCREEN:
+            Activity activity = MainActivityInstance.getActivity();
+            if(activity!= null )
+                if(args.getInt(0)==1){
+                    activity.setRequestedOrientation( ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                    activity.getWindow().setFlags(0,0);
+                }
+                else{
+                    activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE );
+                    activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                }
+
+            break ;
       default:
         break;
     }

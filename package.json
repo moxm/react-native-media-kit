@@ -1,6 +1,6 @@
 {
   "name": "react-native-media-kit",
-  "version": "0.0.14",
+  "version": "0.8.0",
   "description": "Video and Audio component for react-native apps, supporting both iOS and Android.",
   "main": "library/index.js",
   "scripts": {
@@ -10,7 +10,7 @@
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ldn0x7dc/react-native-media-kit.git"
+    "url": "git+https://github.com/moxm/react-native-media-kit.git"
   },
   "keywords": [
     "video",

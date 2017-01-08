@@ -1,14 +1,17 @@
 package com.greatdroid.reactnative.media.player;
 
 import android.content.Context;
+import android.os.PowerManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactContext;
 import com.google.android.exoplayer.ExoPlayer;
+import com.greatdroid.reactnative.media.MainActivityInstance;
 
 public class ReactMediaPlayerView extends FrameLayout implements LifecycleEventListener {
   private static final String TAG = "ReactMediaPlayerView";
@@ -189,8 +192,8 @@ public class ReactMediaPlayerView extends FrameLayout implements LifecycleEventL
 
   @Override
   protected void onAttachedToWindow() {
-    Log.d(TAG, "onAttachedToWindow...");
     super.onAttachedToWindow();
+    MainActivityInstance.getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     if (getContext() instanceof ReactContext) {
       ((ReactContext) getContext()).addLifecycleEventListener(this);
     }
@@ -202,12 +205,13 @@ public class ReactMediaPlayerView extends FrameLayout implements LifecycleEventL
 
   @Override
   protected void onDetachedFromWindow() {
-    Log.d(TAG, "onDetachedFromWindow...");
+    Log.e("test","detached from window ..");
     super.onDetachedFromWindow();
     if (getContext() instanceof ReactContext) {
       ((ReactContext) getContext()).removeLifecycleEventListener(this);
     }
     mediaPlayerControllerOwner.abandonOwnership();
+    MainActivityInstance.getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
   }
 
   @Override

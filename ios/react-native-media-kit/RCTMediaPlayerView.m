@@ -49,7 +49,18 @@
 
 - (void)initPlayerIfNeeded {
   if(!player) {
-    player = [AVPlayer playerWithURL:[NSURL URLWithString:self.src]];
+      
+      NSURL * url ;
+      NSLog(@"src = %@",self.src);
+      
+      if([self.src hasPrefix:@"http"]){
+          url = [NSURL URLWithString:self.src] ;
+      }
+      else{
+          url = [[NSURL alloc] initFileURLWithPath:self.src];
+      }
+      NSLog(@"src = %@",url.absoluteString);
+    player = [AVPlayer playerWithURL:url];
     [self setPlayer:player];
     [self addProgressObserver];
     [self addObservers];
@@ -273,7 +284,68 @@
     }
   }
 }
+-(void) fullScreen:(int) orientation{
+    
+    [ self interfaceOrientation:orientation == 0 ? UIInterfaceOrientationLandscapeLeft:UIInterfaceOrientationPortrait] ;
+}
+/**
+ *  强制屏幕转屏
+ *
+ *  @param orientation 屏幕方向
+ */
+- (void)interfaceOrientation:(UIInterfaceOrientation)orientation
+{
+    UIView * rootView = [UIApplication sharedApplication].keyWindow.rootViewController.view ;
+    if(orientation == UIInterfaceOrientationPortrait){
+        //添加到Window上
+        [UIView animateWithDuration:0.25 animations:^{
+            rootView.transform = CGAffineTransformMakeRotation(0);
+        }];
+        CGRect rx = [ UIScreen mainScreen ].bounds;
+        CGFloat width = rx.size.width ;
+        CGFloat height = rx.size.height;
+        rootView.frame         = CGRectMake(0, 0, width, height);
+        [rootView layer].frame = CGRectMake(0, 0, width, height);
+        [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:NO];
+    }else{
+        //添加到Window上
+        CGRect rx = [ UIScreen mainScreen ].bounds;
+        CGFloat width = rx.size.width ;
+        CGFloat height =rx.size.height ;
 
+        [UIView animateWithDuration:0.25 animations:^{
+            rootView.transform = CGAffineTransformMakeRotation(M_PI / 2);
+         //   self.transform = CGAffineTransformTranslate(self.transform, 0, (width-height)/2);
+        }];
+        rootView.frame         = CGRectMake(0, 0, width, height);
+        [rootView layer].frame = CGRectMake(0, 0, width, height);
+        [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:NO];
+    }
+    
+//
+//    // arc下
+//    if ([[UIDevice currentDevice] respondsToSelector:@selector(setOrientation:)]) {
+//        SEL selector             = NSSelectorFromString(@"setOrientation:");
+//        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[UIDevice instanceMethodSignatureForSelector:selector]];
+//        [invocation setSelector:selector];
+//        [invocation setTarget:[UIDevice currentDevice]];
+//        int val                  = orientation;
+//        // 从2开始是因为0 1 两个参数已经被selector和target占用
+//        [invocation setArgument:&val atIndex:2];
+//        [invocation invoke];
+//    }
+    
+//
+//     // 非arc下
+//     if ([[UIDevice currentDevice] respondsToSelector:@selector(setOrientation:)]) {
+//     [[UIDevice currentDevice] performSelector:@selector(setOrientation:)
+//     withObject:@(orientation)];
+//     }
+    
+     // 直接调用这个方法通不过apple上架审核
+     //[[UIDevice currentDevice] setValue:[NSNumber numberWithInteger:UIInterfaceOrientationLandscapeRight] forKey:@"orientation"];
+    
+}
 - (void)playerItemPlaybackStalled:(NSNotification *)notification {
   [self notifyPlayerBuffering];
 }
@@ -360,4 +432,5 @@
     [player seekToTime:cmTime];
   }
 }
+
 @end

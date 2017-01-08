@@ -24,5 +24,5 @@
 - (void)play;
 - (void)stop;
 - (void)seekTo: (NSTimeInterval)timeInSec;
-
+- (void) fullScreen:(int) orientation ;
 @end

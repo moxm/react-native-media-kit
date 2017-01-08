@@ -26,9 +26,6 @@ RCT_EXPORT_VIEW_PROPERTY(onPlayerProgress, RCTBubblingEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onPlayerBufferChange, RCTBubblingEventBlock)
 
 
-/*- (NSDictionary<NSString *, id> *)constantsToExport {
-  return [super constantsToExport];
-}*/
 RCT_EXPORT_METHOD(pause:(nonnull NSNumber *)reactTag) {
   [self executeBlock:^(RCTMediaPlayerView *view) {
     [view pause];
@@ -52,7 +49,11 @@ RCT_EXPORT_METHOD(seekTo:(nonnull NSNumber *)reactTag :(double)timeMs) {
     [view seekTo:timeMs];
   } withTag:reactTag];
 }
-
+RCT_EXPORT_METHOD(fullScreen:(nonnull NSNumber *)reactTag :(int)orientation) {
+    [self executeBlock:^(RCTMediaPlayerView *view) {
+        [view fullScreen:orientation];
+    } withTag:reactTag];
+}
 
 typedef void (^RCTMediaPlayerViewManagerBlock)(RCTMediaPlayerView *view);
 
