@@ -25,11 +25,17 @@ Supported media types:
 
 * Android: Shold be same as those supported by [ExoPlayer](https://github.com/google/ExoPlayer)
 
-![](Demo/demo.gif).
+![](Demo/play.png).
+![](Demo/fullscreen.png).
+
+
+**package.json**
+```
+    "react-native-media-kit": "git+https://github.com/moxm/react-native-media-kit.git#master",
+```
 
 ## Install
-
-`npm install --save react-native-media-kit@latest `
+`npm install --save react-native-media-kit`
 
 #### iOS
 
