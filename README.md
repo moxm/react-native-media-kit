@@ -1,7 +1,14 @@
 # code from [chinaczy/react-native-media-kit](https://github.com/chinaczy/react-native-media-kit)
 
 # react-native-media-kit
-
+    forked from #ldn0x7dc/react-native-media-kit 进行功能增加。
+    code from [chinaczy/react-native-media-kit](https://github.com/chinaczy/react-native-media-kit)
+    新增功能：
+    1、支持全屏播放和指定大小播放切换。
+    2、全屏播放时，显示视频标及返回按钮。
+    3、3秒自动渐变隐藏播放控制栏及标题栏，点击视频渐变显示控制栏 。
+    4、支持多种分辨率切换。
+    5、修复android下空指针bug
 Video(and audio) component for react-native apps, supporting both iOS and Android, with API similar to HTML video.
 
 A default set of controls is provided to play/pause, seek and to display current playback and buffer progress.
@@ -51,8 +58,27 @@ import com.greatdroid.reactnative.media.MediaKitPackage;
 protected List<ReactPackage> getPackages() {
     return Arrays.<ReactPackage>asList(
         new MainReactPackage(),
-            new MediaKitPackage()
+        new MediaKitPackage()
     );
+}
+```
+
+**MainActivity.java**
+
+```
+//...
+import com.greatdroid.reactnative.media.MainActivityInstance;
+//...
+
+public class MainActivity extends ReactActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        MainActivityInstance.setActivity(this);// here
+        //...
+        super.onCreate(savedInstanceState);
+    }
+    //...
 }
 ```
 
@@ -62,7 +88,12 @@ protected List<ReactPackage> getPackages() {
 
 ```
 import {Video} from 'react-native-media-kit';
-...
+//...
+
+fullScreen(){
+    this.forceUpdate() ; // 横屏强制刷新
+}
+//...  
 render() {
   return (
   	<Video
@@ -73,6 +104,8 @@ render() {
       loop={false}
       controls={true}
       muted={false}
+      ref={(video)=>this.video = video}
+      screenUpdate={this.fullScreen.bind(this)}
       poster={'http://static.yoaicdn.com/shoppc/images/cover_img_e1e9e6b.jpg'}
     />
   );
