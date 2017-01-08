@@ -1,6 +1,7 @@
 # code from [chinaczy/react-native-media-kit](https://github.com/chinaczy/react-native-media-kit)
 
 # react-native-media-kit
+```
     forked from #ldn0x7dc/react-native-media-kit 进行功能增加。
     code from [chinaczy/react-native-media-kit](https://github.com/chinaczy/react-native-media-kit)
     新增功能：
@@ -9,6 +10,7 @@
     3、3秒自动渐变隐藏播放控制栏及标题栏，点击视频渐变显示控制栏 。
     4、支持多种分辨率切换。
     5、修复android下空指针bug
+```
     
 Video(and audio) component for react-native apps, supporting both iOS and Android, with API similar to HTML video.
 
