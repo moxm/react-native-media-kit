@@ -1,3 +1,5 @@
+# code from [chinaczy/react-native-media-kit](https://github.com/chinaczy/react-native-media-kit)
+
 # react-native-media-kit
 
 Video(and audio) component for react-native apps, supporting both iOS and Android, with API similar to HTML video.
